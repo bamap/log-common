@@ -5,7 +5,7 @@
 
     <groupId>ir.bamap.blu</groupId>
     <artifactId>log-common</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
 
     <name>log-common</name>
     <description>
@@ -50,12 +50,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
-        <spring-boot.version>4.1.1</spring-boot.version>
+        <spring-boot.version>4.1.2</spring-boot.version>
 
         <bamap-exception.version>1.0.6</bamap-exception.version>
         <bamap-util.version>1.0.9</bamap-util.version>
-        <bamap-log-annotation.version>1.2.0</bamap-log-annotation.version>
-        <bamap-execution-context-info.version>1.0.0</bamap-execution-context-info.version>
+        <bamap-log-annotation.version>1.2.1</bamap-log-annotation.version>
+        <bamap-execution-context-info.version>1.0.1</bamap-execution-context-info.version>
     </properties>
     <dependencies>
 
