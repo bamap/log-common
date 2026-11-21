@@ -11,6 +11,7 @@ import ir.bamap.blu.log.annotation.LoggablePutExchange
 import ir.bamap.blu.log.annotation.LoggablePutMapping
 import ir.bamap.blu.log.formatter.JsonMethodArgumentsFormatter
 import ir.bamap.blu.log.formatter.MethodArgumentsFormatter
+import ir.bamap.blu.log.model.LogConfig
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
@@ -19,54 +20,89 @@ import org.aspectj.lang.annotation.Aspect
 class LogApiCallAspect(
     requestInfoService: ExecutionContextInfoService,
     argumentsFormatter: MethodArgumentsFormatter = JsonMethodArgumentsFormatter()
-) : MethodExecutionLogger(requestInfoService, argumentsFormatter) {
+) : MethodExecutionLogger(
+    requestInfoService, argumentsFormatter,
+    "Received a request", "Request handle successfully", "Request failed"
+) {
 
-    @Around("@annotation(loggableMapping)")
-    fun getMappingLogAround(joinPoint: ProceedingJoinPoint, loggableMapping: LoggableGetMapping): Any? {
-        val logConfig = LogConfig(loggableMapping.level, loggableMapping.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun getMappingLogAround(joinPoint: ProceedingJoinPoint, annotation: LoggableGetMapping): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 
-    @Around("@annotation(loggableMapping)")
-    fun postMappingLogAround(joinPoint: ProceedingJoinPoint, loggableMapping: LoggablePostMapping): Any? {
-        val logConfig = LogConfig(loggableMapping.level, loggableMapping.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun postMappingLogAround(joinPoint: ProceedingJoinPoint, annotation: LoggablePostMapping): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 
-    @Around("@annotation(loggableMapping)")
-    fun putMappingLogAround(joinPoint: ProceedingJoinPoint, loggableMapping: LoggablePutMapping): Any? {
-        val logConfig = LogConfig(loggableMapping.level, loggableMapping.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun putMappingLogAround(joinPoint: ProceedingJoinPoint, annotation: LoggablePutMapping): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 
-    @Around("@annotation(loggableMapping)")
-    fun deleteMappingLogAround(joinPoint: ProceedingJoinPoint, loggableMapping: LoggableDeleteMapping): Any? {
-        val logConfig = LogConfig(loggableMapping.level, loggableMapping.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun deleteMappingLogAround(joinPoint: ProceedingJoinPoint, annotation: LoggableDeleteMapping): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 
     // Exchange
-    @Around("@annotation(loggableExchange)")
-    fun getExchangeLogAround(joinPoint: ProceedingJoinPoint, loggableExchange: LoggableGetExchange): Any? {
-        val logConfig = LogConfig(loggableExchange.level, loggableExchange.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun getExchangeLogAround(joinPoint: ProceedingJoinPoint, annotation: LoggableGetExchange): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 
-    @Around("@annotation(loggableExchange)")
-    fun postExchangeLogAround(joinPoint: ProceedingJoinPoint, loggableExchange: LoggablePostExchange): Any? {
-        val logConfig = LogConfig(loggableExchange.level, loggableExchange.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun postExchangeLogAround(joinPoint: ProceedingJoinPoint, annotation: LoggablePostExchange): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 
-    @Around("@annotation(loggableExchange)")
-    fun putExchangeLogAround(joinPoint: ProceedingJoinPoint, loggableExchange: LoggablePutExchange): Any? {
-        val logConfig = LogConfig(loggableExchange.level, loggableExchange.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun putExchangeLogAround(joinPoint: ProceedingJoinPoint, annotation: LoggablePutExchange): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 
-    @Around("@annotation(loggableExchange)")
-    fun deleteExchangeLogAround(joinPoint: ProceedingJoinPoint, loggableExchange: LoggableDeleteExchange): Any? {
-        val logConfig = LogConfig(loggableExchange.level, loggableExchange.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun deleteExchangeLogAround(joinPoint: ProceedingJoinPoint, annotation: LoggableDeleteExchange): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 }

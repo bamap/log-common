@@ -9,18 +9,20 @@ import ir.bamap.blu.log.errorByParam
 import ir.bamap.blu.log.formatter.JsonMethodArgumentsFormatter
 import ir.bamap.blu.log.formatter.MethodArgumentsFormatter
 import ir.bamap.blu.log.infoByParam
+import ir.bamap.blu.log.model.LogConfig
 import ir.bamap.blu.log.warnByParam
-import ir.bamap.blu.util.RandomUtil
 import org.aspectj.lang.ProceedingJoinPoint
 import org.aspectj.lang.reflect.MethodSignature
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.atomic.AtomicLong
 
 open class MethodExecutionLogger(
-    private val executionContextInfoService: ExecutionContextInfoService,
-    private val argumentsFormatter: MethodArgumentsFormatter = JsonMethodArgumentsFormatter()
+    protected val executionContextInfoService: ExecutionContextInfoService,
+    protected val argumentsFormatter: MethodArgumentsFormatter = JsonMethodArgumentsFormatter(),
+    protected val startCallMethodMessage: String = "Calling method",
+    protected val successfulCallMethodMessage: String = "Successful call method",
+    protected val failedCallMethodMessage: String = "Exception occurred in method call"
 ) {
 
     protected val loggerMap: MutableMap<String, Logger> = ConcurrentHashMap()
@@ -33,7 +35,7 @@ open class MethodExecutionLogger(
         val startTime = System.currentTimeMillis()
         val result: Any?
 
-        val methodInfo = initMethodExecutionInfo(joinPoint)
+        val methodInfo = initMethodExecutionInfo(joinPoint, logConfig)
 
         logStartMethodExecution(methodInfo, logConfig)
 
@@ -47,7 +49,9 @@ open class MethodExecutionLogger(
 
         val duration = System.currentTimeMillis() - startTime
 
-        val resultFormatted = argumentsFormatter.format(mapOf("result" to result))["result"]
+        val resultFormatted = argumentsFormatter.formatResult(
+            result, logConfig.maskResultFields, logConfig.ignoreResultFields
+        )
         val runMethodInfo = methodInfo.copy(result = resultFormatted, duration = duration)
         logMethodExecutionCompleted(runMethodInfo, logConfig)
 
@@ -55,14 +59,14 @@ open class MethodExecutionLogger(
         return result
     }
 
-    protected fun initMethodExecutionInfo(joinPoint: ProceedingJoinPoint): MethodCallInfoModel {
+    protected fun initMethodExecutionInfo(joinPoint: ProceedingJoinPoint, logConfig: LogConfig): MethodCallInfoModel {
 
         val signature = joinPoint.signature as MethodSignature
         val argumentsMap = signature.parameterNames
             .zip(joinPoint.args)
             .toMap()
 
-        val arguments = argumentsFormatter.format(argumentsMap)
+        val arguments = argumentsFormatter.formatArguments(argumentsMap, logConfig.maskArgs, logConfig.ignoreArgs)
 
         val requestInfo = executionContextInfoService.getInfo()
         val executionContext = LogUtil.getExecutionContextLogArguments(requestInfo)
@@ -75,7 +79,11 @@ open class MethodExecutionLogger(
         )
     }
 
-    protected open fun logMethodExecutionDuration(methodInfo: MethodCallInfoModel, logConfig: LogConfig, duration: Long) {
+    protected open fun logMethodExecutionDuration(
+        methodInfo: MethodCallInfoModel,
+        logConfig: LogConfig,
+        duration: Long
+    ) {
         if (duration < logConfig.slowThresholdMs)
             return
 
@@ -98,7 +106,7 @@ open class MethodExecutionLogger(
             "method" to methodInfo.getMethodSignatureMap()
         )
 
-        log(methodInfo.cls, "Calling method", arguments, logConfig.logLevel)
+        log(methodInfo.cls, startCallMethodMessage, arguments, logConfig.logLevel)
     }
 
     protected open fun logMethodExecutionCompleted(methodInfo: MethodCallInfoModel, logConfig: LogConfig) {
@@ -108,7 +116,7 @@ open class MethodExecutionLogger(
             "method" to methodInfo.getFullMethodSignatureMap(),
         )
 
-        log(methodInfo.cls, "Successful call method", arguments, logConfig.logLevel)
+        log(methodInfo.cls, successfulCallMethodMessage, arguments, logConfig.logLevel)
     }
 
     protected open fun logMethodExecutionException(
@@ -127,7 +135,7 @@ open class MethodExecutionLogger(
             "stackTrace" to LogUtil.getStackTrace(throwable).take(2000)
         )
 
-        logger.errorByParam("Exception occurred in method call", logArguments)
+        logger.errorByParam(failedCallMethodMessage, logArguments)
     }
 
     protected open fun getLoggerByJoinPoint(cls: String): Logger {
@@ -140,19 +148,5 @@ open class MethodExecutionLogger(
             logger.infoByParam(message, arguments)
         else // its DEBUG
             logger.debugByParam(message, arguments)
-    }
-
-    data class LogConfig(val logLevel: LogLevel = LogLevel.INFO, val slowThresholdMs: Int) {
-        val groupId: String = PREFIX_LOG + LOG_COUNTER.incrementAndGet()
-            .toString().reversed().chunked(3)
-            .map { it.reversed() }
-            .reversed()
-            .mapIndexed { index, chunk -> if (index == 0) chunk.padStart(3, '0') else chunk }
-            .joinToString("-")
-
-        companion object {
-            private val PREFIX_LOG = RandomUtil.nextString(3, RandomUtil.BIG_LETTERS).uppercase() + "-"
-            private var LOG_COUNTER: AtomicLong = AtomicLong(0)
-        }
     }
 }

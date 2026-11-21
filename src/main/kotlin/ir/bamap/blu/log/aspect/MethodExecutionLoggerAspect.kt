@@ -7,6 +7,7 @@ import ir.bamap.blu.log.formatter.MethodArgumentsFormatter
 import org.aspectj.lang.ProceedingJoinPoint
 import ir.bamap.blu.log.annotation.LogExecution
 import ir.bamap.blu.log.enums.LogLevel
+import ir.bamap.blu.log.model.LogConfig
 import org.aspectj.lang.annotation.Around
 import org.aspectj.lang.annotation.Aspect
 
@@ -28,15 +29,23 @@ class MethodExecutionLoggerAspect(
         return callMethodAndLog(joinPoint, logConfig)
     }*/
 
-    @Around("@annotation(log)")
-    fun logExecutionAround(joinPoint: ProceedingJoinPoint, log: LogExecution): Any? {
-        val logConfig = LogConfig(logLevel = log.level, log.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun logExecutionAround(joinPoint: ProceedingJoinPoint, annotation: LogExecution): Any? {
+        val logConfig = LogConfig(
+            annotation.level, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 
-    @Around("@annotation(log)")
-    fun debugExecutionAround(joinPoint: ProceedingJoinPoint, log: DebugExecution): Any? {
-        val logConfig = LogConfig(LogLevel.DEBUG, log.slowThresholdMs)
+    @Around("@annotation(annotation)")
+    fun debugExecutionAround(joinPoint: ProceedingJoinPoint, annotation: DebugExecution): Any? {
+        val logConfig = LogConfig(
+            LogLevel.DEBUG, annotation.slowThresholdMs,
+            annotation.maskArgs, annotation.ignoreArgs,
+            annotation.maskResultFields, annotation.maskResultFields
+        )
         return executeMethodAndLog(joinPoint, logConfig)
     }
 }

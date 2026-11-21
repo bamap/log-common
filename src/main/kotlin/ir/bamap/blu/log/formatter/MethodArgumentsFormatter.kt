@@ -1,7 +1,11 @@
 package ir.bamap.blu.log.formatter
 
 interface MethodArgumentsFormatter {
-    fun format(arguments: Map<String, Any?>): Map<String, Any?>
+    fun formatArguments(
+        arguments: Map<String, Any?>,
+        maskArgs: Array<String>,
+        ignoreArgs: Array<String>
+    ): Map<String, Any?>
 
-    fun formatValue(value: Any?): Any?
+    fun formatResult(result: Any?, maskFields: Array<String>, ignoreFields: Array<String>): Any?
 }
