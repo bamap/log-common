@@ -17,24 +17,12 @@ class MethodExecutionLoggerAspect(
     argumentsFormatter: MethodArgumentsFormatter = JsonMethodArgumentsFormatter()
 ) : MethodExecutionLogger(requestInfoService, argumentsFormatter) {
 
-    /*@Around("@annotation(logMethodCall)")
-    fun logAround(joinPoint: ProceedingJoinPoint, logMethodCall: LogMethodCall): Any? {
-        val logConfig = LogConfig(logLevel = logMethodCall.level, 1_000_000)
-        return callMethodAndLog(joinPoint, logConfig)
-    }
-
-    @Around("@annotation(debugMethodCall)")
-    fun debugAround(joinPoint: ProceedingJoinPoint, debugMethodCall: DebugMethodCall): Any? {
-        val logConfig = LogConfig(LogLevel.DEBUG, 1_000_000)
-        return callMethodAndLog(joinPoint, logConfig)
-    }*/
-
     @Around("@annotation(annotation)")
     fun logExecutionAround(joinPoint: ProceedingJoinPoint, annotation: LogExecution): Any? {
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }
@@ -44,7 +32,7 @@ class MethodExecutionLoggerAspect(
         val logConfig = LogConfig(
             LogLevel.DEBUG, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }

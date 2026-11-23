@@ -30,7 +30,7 @@ class LogApiCallAspect(
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }
@@ -40,7 +40,7 @@ class LogApiCallAspect(
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }
@@ -50,7 +50,7 @@ class LogApiCallAspect(
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }
@@ -60,7 +60,7 @@ class LogApiCallAspect(
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }
@@ -71,7 +71,7 @@ class LogApiCallAspect(
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }
@@ -81,7 +81,7 @@ class LogApiCallAspect(
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }
@@ -91,7 +91,7 @@ class LogApiCallAspect(
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }
@@ -101,7 +101,7 @@ class LogApiCallAspect(
         val logConfig = LogConfig(
             annotation.level, annotation.slowThresholdMs,
             annotation.maskArgs, annotation.ignoreArgs,
-            annotation.maskResultFields, annotation.maskResultFields
+            annotation.maskResultFields, annotation.ignoreResultFields
         )
         return executeMethodAndLog(joinPoint, logConfig)
     }

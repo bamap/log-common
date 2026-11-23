@@ -55,7 +55,7 @@ open class MethodExecutionLogger(
         val runMethodInfo = methodInfo.copy(result = resultFormatted, duration = duration)
         logMethodExecutionCompleted(runMethodInfo, logConfig)
 
-        logMethodExecutionDuration(runMethodInfo, logConfig, duration)
+        logMethodExecutionIfSlow(runMethodInfo, logConfig, duration)
         return result
     }
 
@@ -79,7 +79,7 @@ open class MethodExecutionLogger(
         )
     }
 
-    protected open fun logMethodExecutionDuration(
+    protected open fun logMethodExecutionIfSlow(
         methodInfo: MethodCallInfoModel,
         logConfig: LogConfig,
         duration: Long
